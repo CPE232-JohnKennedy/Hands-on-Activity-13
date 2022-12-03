@@ -1,0 +1,47 @@
+#Installation of SQL-Database
+
+# Install and configure components
+
+- name: install the packages
+  shell:
+    sudo apt install -y mariadb-server python3-pymysql
+
+- name: Creating the configuration file
+  file:
+    path: /etc/mysql/mariadb.conf.d/99-openstack.cnf
+    state: touch
+
+- name: Edit the configuration file
+  lineinfile:
+    path: /etc/mysql/mariadb.conf.d/99-openstack.cnf
+    state: present
+    line: "{{ item }}"
+  with_items:
+  - [mysql]
+  - bind-address = 10.0.0.11
+  - |
+  - default-storage-engine = innodb
+  - innodb_file_per_table = on
+  - max_connections = 4096
+  - collation-server = utf8_general_ci
+  - character-set-server = utf8
+
+# Finalized installation
+
+- name: restart the database service
+  shell:
+    service mysql restart
+
+- name: secure the database service
+  expect:
+    command: mysql_secure_installation
+    responses:
+      'Enter current password for root': ''
+      'Set root password': 'n'
+      'Remove anonymous users': 'y'
+      'Disallow root login remotely': 'y'
+      'Remove test database': 'y'
+      'Reload privilege tables now': 'y'
+    timeout: 1
+  register: secure_mariadb
+  failed_when: "'... Failed!' in secure_mariadb.stdout_lines"

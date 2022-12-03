@@ -1,0 +1,17 @@
+#Installation of OpenStack-packages
+
+### Archive Enablement ###
+
+# OpenStack yoga is available by default on Ubuntu 22.04 LTS
+
+### Sample Installation ###
+
+- name: installing nova-compute
+  shell:
+    apt install -y nova-compute
+
+### Client Installation ###
+
+- name: installing  python3-openstack client
+  shell:
+    apt install -y python3-openstackclient

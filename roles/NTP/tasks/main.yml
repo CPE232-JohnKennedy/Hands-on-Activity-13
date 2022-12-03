@@ -1,0 +1,24 @@
+#Installation of NTP
+
+- name: Install chrony
+  shell:
+    sudo apt install -y chrony
+
+- name: Edit chrony.conf
+  ansible.builtin.lineinfile:
+    state: present
+    dest: /etc/chrony/chrony.conf
+    regexp: "server NTP_SERVER iburst"
+    line: "server 192.168.56.101 iburst"
+
+- name: enable other nodes to connect to chrony daemon
+  ansible.builtin.lineinfile:
+    state: present
+    dest: /etc/chrony/chrony.conf
+    line: "allow 10.0.0.0/24"
+
+- name: restart NTP service
+  shell:
+    service chrony restart
+
+

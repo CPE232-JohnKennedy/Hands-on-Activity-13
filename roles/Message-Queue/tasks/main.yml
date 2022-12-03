@@ -1,0 +1,17 @@
+#Installation of Messsage-Queue
+
+# Install and configure components
+
+- name: install the package
+  shell:
+    sudo apt install -y rabbitmq-server
+
+- name: add the openstack user
+  shell:
+    rabbitmqctl add_user aquino-jk RABBIT_AJK
+
+- name: permit configuration, write, and read access
+  shell:
+    rabbitmqctl set_permissions aquino-jk ".*" ".*" ".*"
+
+
